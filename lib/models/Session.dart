@@ -2,7 +2,7 @@
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-void saveSession(String apiToken, String email, Map<String, dynamic> info) async {
+void saveSession(String apiToken, Map<String, dynamic> info) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> infoUser = [];
     info.forEach(
@@ -12,7 +12,6 @@ void saveSession(String apiToken, String email, Map<String, dynamic> info) async
     );
 
     prefs.setString('apiToken', apiToken);
-    prefs.setString('email', email);
     prefs.setStringList('info', infoUser);
   }
 

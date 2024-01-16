@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -51,7 +53,7 @@ class _PaidPageState extends State<PaidPage> {
                 const SizedBox(height: 15,),
                 Center(
                   // ignore: prefer_interpolation_to_compose_strings
-                  child: Text('${'Concepto ('+session['info'][8]})', style: const TextStyle(color: Colors.yellow, fontSize: 20)),
+                  child: Text('Concepto: '+session['info'][5], style: const TextStyle(color: Colors.yellow, fontSize: 20)),
                 ),
                 const SizedBox(height: 20,),
                 Center(
@@ -81,7 +83,7 @@ class _PaidPageState extends State<PaidPage> {
                             'img':  base64.encode(bytes)
                           };
                           final response = await http.Client().patch(
-                            Uri.http('10.0.2.2', '/dinerus/public/api/user/paid', {'api_token': session['apiToken']}),
+                            Uri.https('phpstack-585128-4196278.cloudwaysapps.com', '/api/user/paid', {'api_token': session['apiToken']}),
                             body: jsonEncode(data),
                             headers: {
                               'Content-type': 'application/json',
@@ -90,8 +92,18 @@ class _PaidPageState extends State<PaidPage> {
                             },
                           );
                           if(response.statusCode == 200){
+                            Map<String, dynamic> responseJson = jsonDecode(response.body);
+                            if(responseJson['type'] == 'success'){
+                              // ignore: use_build_context_synchronously
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const ConfirmationPage()));
+                            }else{
+                              // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al subir el comprobante')));
+                            }  
+                            
+                          }else{
                             // ignore: use_build_context_synchronously
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ConfirmationPage()));
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ocurrio un error')));
                           }
                         } on SocketException{
                           // ignore: use_build_context_synchronously

@@ -65,11 +65,11 @@ class _MyRowsState extends State<MyRows> {
     return Column(
       children: [
         MyRow(clave: 'NOMBRE:', valor: session['info'][1]),
-        MyRow(clave: 'CURP:', valor: session['info'][2]),
-        MyRow(clave: 'RFC:', valor: session['info'][3]),
-        MyRow(clave: 'BANCO A RECIBIR TU DINERO:', valor: session['info'][7]),
-        MyRow(clave: 'CLABE INTERBANCARIA 18 DIGITOS:', valor: session['info'][6]),
-        MyRow(clave: 'TU NÚMERO DE TURNO ES:', valor: session['info'][8]),
+        //MyRow(clave: 'CURP:', valor: session['info'][2]),
+        //MyRow(clave: 'RFC:', valor: session['info'][3]),
+        MyRow(clave: 'BANCO A RECIBIR TU DINERO:', valor: session['info'][3]),
+        MyRow(clave: 'CLABE INTERBANCARIA 18:', valor: session['info'][2]),
+        MyRow(clave: 'TU NÚMERO DE TURNO ES:', valor: session['info'][4]),
       ],
     );
   }

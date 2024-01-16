@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -17,32 +19,46 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    final TextEditingController _correo = TextEditingController();
-    final TextEditingController _password = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+    final TextEditingController correo = TextEditingController();
+    final TextEditingController password = TextEditingController();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.yellow,
       ),
-      body: Container(
-          decoration: const BoxDecoration(color: Colors.black),
-          child: Column(
-            children: [
-              const Center(child: Text('INICIAR SESIÓN', style: TextStyle(color: Colors.yellow, fontSize: 30))),
-              const SizedBox(height: 20,),
-              Center(
-                child: Form(
-                  key: _formKey,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.only(bottomRight: Radius.circular(60)),
+                color: Colors.black,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.asset('assets/img/logo.jpeg'),
+                  const SizedBox(height: 30,),
+                  const Text('INICIO DE SESIÓN', style: TextStyle(color: Colors.white, fontSize: 30), textAlign: TextAlign.start,),
+                  const SizedBox(height: 15,),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30,),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                  key: formKey,
                   child: Column(
                     children: [
                       TextFormField(
-                        controller: _correo,
-                        style: const TextStyle(color: Colors.yellow),
+                        controller: correo,
+                        style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.yellow
+                              color: Colors.black
                             )
                           ),
                           labelText: 'Correo'
@@ -56,12 +72,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 20,),
                       TextFormField(
-                        controller: _password,
-                        style: const TextStyle(color: Colors.yellow),
+                        controller: password,
+                        style: const TextStyle(color: Colors.black),
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.yellow
+                              color: Colors.black
                             )
                           ),
                           labelText: 'Contraseña'
@@ -76,15 +92,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 30,),
                       ElevatedButton(
-                        onPressed: () async{
-                          if(_formKey.currentState!.validate()){
+                        onPressed: () async {
+                          if(formKey.currentState!.validate()){
                             try{
                               var data = {
-                                'email': _correo.text,
-                                'password': _password.text,
+                                'email': correo.text,
+                                'password': password.text,
                               };
                               final response = await http.Client().post(
-                                Uri.http('10.0.2.2', '/dinerus/public/api/login'),
+                                Uri.https('phpstack-585128-4196278.cloudwaysapps.com', '/api/login'),
                                 body: jsonEncode(data),
                                 headers: {
                                   'Content-type': 'application/json',
@@ -94,38 +110,46 @@ class _LoginPageState extends State<LoginPage> {
                               );
                               if(response.statusCode == 200){
                                 Map<String, dynamic> responseJson = jsonDecode(response.body);
-                                saveSession(
-                                  responseJson['token'],
-                                  responseJson['userdata']['email'],
-                                  responseJson['userdata'],
-                                );
+                                if(responseJson['type'] == 'success'){
+                                  saveSession(
+                                    responseJson['token'],
+                                    responseJson['userdata']
+                                  );
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseJson['message'])));
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PaidPage()));
+                                }else{
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al iniciar sesión')));
+                                }
+                                
+                              }else{
                                 // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseJson['message'])));
-                                // ignore: use_build_context_synchronously
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => responseJson['userdata']['paid'] == 0 ? const PaidPage() : const PaidPage(),
-                                  ),
-                                );
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ocurrio un error')));
                               }
                             } on SocketException{
                               // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error de servidor')));
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error de servidor')));
                             }
                           }
                         },
-                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow)),
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow),
+                          padding: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+                            return const EdgeInsets.symmetric(horizontal: 100, vertical: 10);
+                          }),
+                        ),
                         child: const Text('ACCEDER', style: TextStyle(color: Colors.black, fontSize: 22))
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
-            )
+          ],
         ),
-      );
+      ),
+    );
   }
   
 }

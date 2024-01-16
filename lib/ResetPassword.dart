@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -62,7 +64,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                                 'email': _correo.text,
                               };
                               final response = await http.Client().post(
-                                Uri.http('10.0.2.2', '/dinerus/public/api/reset-password'),
+                                Uri.https('phpstack-585128-4196278.cloudwaysapps.com', '/api/reset-password'),
                                 body: jsonEncode(data),
                                 headers: {
                                   'Content-type': 'application/json',
@@ -72,8 +74,17 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                               );
                               if(response.statusCode == 200){
                                 Map<String, dynamic> responseJson = jsonDecode(response.body);
+                                if(responseJson['type'] == 'success'){
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseJson['text'])));
+                                }else{
+                                  // ignore: use_build_context_synchronously
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al restaurar la contraseña')));
+                                }
+                                
+                              }else{
                                 // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseJson['message'])));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ocurrio un error')));
                               }
                             } on SocketException{
                               // ignore: use_build_context_synchronously

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dinerus_app/Paid.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -26,13 +27,14 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         foregroundColor: Colors.yellow,
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: const BoxDecoration(color: Colors.black),
+
           child: Column(
             children: [
               const Center(child: Text('REGISTRO', style: TextStyle(color: Colors.yellow, fontSize: 30))),
@@ -61,46 +63,46 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                         },
                       ),
                       const SizedBox(height: 20,),
-                      TextFormField(
-                        controller: _curp,
-                        style: const TextStyle(color: Colors.yellow),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.yellow
-                            )
-                          ),
-                          labelText: 'CURP'
-                        ),
-                        maxLength: 18,
-                        validator: (value) {
-                          if(value!.isEmpty){
-                            return 'Escribe tu CURP';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20,),
-                      TextFormField(
-                        controller: _rfc,
-                        style: const TextStyle(color: Colors.yellow),
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.yellow
-                            )
-                          ),
-                          labelText: 'RFC'
-                        ),
-                        maxLength: 13,
-                        validator: (value) {
-                          if(value!.isEmpty){
-                            return 'Escribe tu RFC';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20,),
+                      // TextFormField(
+                      //   controller: _curp,
+                      //   style: const TextStyle(color: Colors.yellow),
+                      //   decoration: const InputDecoration(
+                      //     border: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Colors.yellow
+                      //       )
+                      //     ),
+                      //     labelText: 'CURP'
+                      //   ),
+                      //   maxLength: 18,
+                      //   validator: (value) {
+                      //     if(value!.isEmpty){
+                      //       return 'Escribe tu CURP';
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
+                      // const SizedBox(height: 20,),
+                      // TextFormField(
+                      //   controller: _rfc,
+                      //   style: const TextStyle(color: Colors.yellow),
+                      //   decoration: const InputDecoration(
+                      //     border: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //         color: Colors.yellow
+                      //       )
+                      //     ),
+                      //     labelText: 'RFC'
+                      //   ),
+                      //   maxLength: 13,
+                      //   validator: (value) {
+                      //     if(value!.isEmpty){
+                      //       return 'Escribe tu RFC';
+                      //     }
+                      //     return null;
+                      //   },
+                      // ),
+                      // const SizedBox(height: 20,),
                       TextFormField(
                         controller: _banco,
                         style: const TextStyle(color: Colors.yellow),
@@ -178,46 +180,46 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 20,),
-                      TextButton(
-                        onPressed: () async{
-                          final ImagePicker picker = ImagePicker();
-                          final XFile? image = await picker.pickImage(source: ImageSource.camera);
-                          setState(() {
-                            path = image!.path;
-                          });
-                        },
-                        style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow)),
-                        child: const Text('INE FRONTAL', style: TextStyle(color: Colors.black, fontSize: 20))
-                      ),
-                      path == ''
-                        ? Container()
-                        : Image.file(
-                        File(path),
-                        width: 100,
-                      ),
+                      // const SizedBox(height: 20,),
+                      // TextButton(
+                      //   onPressed: () async{
+                      //     final ImagePicker picker = ImagePicker();
+                      //     final XFile? image = await picker.pickImage(source: ImageSource.camera);
+                      //     setState(() {
+                      //       path = image!.path;
+                      //     });
+                      //   },
+                      //   style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.yellow)),
+                      //   child: const Text('INE FRONTAL', style: TextStyle(color: Colors.black, fontSize: 20))
+                      // ),
+                      // path == ''
+                      //   ? Container()
+                      //   : Image.file(
+                      //   File(path),
+                      //   width: 100,
+                      // ),
                       const SizedBox(height: 30,),
                       ElevatedButton(
                         onPressed: () async{
-                          if(path == ''){
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Toma una foto de tu INE')));
-                            return;
-                          }
+                          // if(path == ''){
+                          //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Toma una foto de tu INE')));
+                          //   return;
+                          // }
                           if(_formKey.currentState!.validate()){
-                            List<int> bytes = File(path).readAsBytesSync();
+                            //List<int> bytes = File(path).readAsBytesSync();
                             try{
                               var data = {
                                 'full_name': _fullName.text,
-                                'curp': _curp.text,
-                                'rfc': _rfc.text,
+                                //'curp': _curp.text,
+                                //'rfc': _rfc.text,
                                 'bank': _banco.text,
                                 'account_number': _accountNumber.text,
                                 'email': _correo.text,
                                 'pass': _contraena.text,
-                                'img':  base64.encode(bytes)
+                                //'img':  base64.encode(bytes)
                               };
                               final response = await http.Client().post(
-                                Uri.http('10.0.2.2', '/dinerus/public/api/user/create'),
+                                Uri.https('phpstack-585128-4196278.cloudwaysapps.com', '/api/user/create'),
                                 body: jsonEncode(data),
                                 headers: {
                                   'Content-type': 'application/json',
@@ -227,8 +229,18 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                               );
                               if(response.statusCode == 200){
                                 Map<String, dynamic> responseJson = jsonDecode(response.body);
+                                if(responseJson['type'] == 'success'){
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseJson['message'])));
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pop(context);
+                                }else{
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al crear la cuenta')));
+                                }                          
+                              }else{
                                 // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(responseJson['message'])));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ocurrio un error')));
                               }
                             } on SocketException{
                               // ignore: use_build_context_synchronously
