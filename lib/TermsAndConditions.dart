@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:dinerus_app/Welcome.dart';
 import 'package:flutter/material.dart';
 

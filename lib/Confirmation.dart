@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:dinerus_app/TermsAndConditions.dart';
 import 'package:dinerus_app/models/Session.dart';
 import 'package:flutter/material.dart';

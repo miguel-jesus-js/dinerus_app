@@ -1,10 +1,9 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:dinerus_app/Paid.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 
 class CreateAccountPage extends StatefulWidget {
   const CreateAccountPage({super.key});
@@ -16,14 +15,15 @@ class CreateAccountPage extends StatefulWidget {
 class _CreateAccountPageState extends State<CreateAccountPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fullName = TextEditingController();
-  final TextEditingController _curp = TextEditingController();
-  final TextEditingController _rfc = TextEditingController();
+  final TextEditingController curp = TextEditingController();
+  final TextEditingController rfc = TextEditingController();
   final TextEditingController _banco = TextEditingController();
   final TextEditingController _accountNumber = TextEditingController();
   final TextEditingController _correo = TextEditingController();
   final TextEditingController _contraena = TextEditingController();
   String path = '';
   String imagen64 = '';
+  bool load = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,9 +32,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.yellow,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-
+      body: Stack(
+        children: [
+          SingleChildScrollView(
           child: Column(
             children: [
               const Center(child: Text('REGISTRO', style: TextStyle(color: Colors.yellow, fontSize: 30))),
@@ -206,6 +206,9 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                           //   return;
                           // }
                           if(_formKey.currentState!.validate()){
+                            setState(() {
+                              load = true;
+                            });
                             //List<int> bytes = File(path).readAsBytesSync();
                             try{
                               var data = {
@@ -235,14 +238,23 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                                   // ignore: use_build_context_synchronously
                                   Navigator.pop(context);
                                 }else{
+                                  setState(() {
+                                    load = false;
+                                  });
                                   // ignore: use_build_context_synchronously
                                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error al crear la cuenta')));
                                 }                          
                               }else{
+                                setState(() {
+                                  load = false;
+                                });
                                 // ignore: use_build_context_synchronously
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Ocurrio un error')));
                               }
                             } on SocketException{
+                              setState(() {
+                                load = false;
+                              });
                               // ignore: use_build_context_synchronously
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Error de servidor')));
                             }
@@ -256,8 +268,25 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
                 ),
               ),
             ],
+            ),
+          ),
+          load ?
+          Positioned(
+            child: Opacity(
+              opacity: 0.4,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.grey
+                ),
+                height: MediaQuery.of(context).size.height * 1,
+                child: const LinearProgressIndicator(
+                  color: Colors.black,
+                ),
+              ),
             )
-        ),
+          ) :
+          Container(),
+        ]
       ),
     );
   }
